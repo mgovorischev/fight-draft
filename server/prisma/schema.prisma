@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  COMP_ORGANIZER
+  TEAM_MANAGER
+  FIGHTER
+  VIEWER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum StyleType {
+  FULL_CONTACT
+  LIGHT_CONTACT
+  KICK_LIGHT
+  LOW_KICK
+  K1
+  POINT_FIGHTING
+  MUSICAL_FORMS
+}
+
+enum Experience {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  PROFESSIONAL
+}
+
+enum RegStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  password     String
+  firstName    String
+  lastName     String
+  role         UserRole  @default(TEAM_MANAGER)
+  organization String?
+  teams        Team[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Team {
+  id          String    @id @default(uuid())
+  name        String
+  city        String?
+  country     String?
+  coachName   String?
+  coachPhone  String?
+  coachEmail  String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  fighters    Fighter[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Fighter {
+  id            String         @id @default(uuid())
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime
+  gender        Gender
+  weight        Float
+  height        Float?
+  experience    Experience     @default(BEGINNER)
+  teamId        String
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  registrations Registration[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Category {
+  id            String         @id @default(uuid())
+  name          String
+  style         StyleType
+  ageMin        Int
+  ageMax        Int
+  weightMin     Float
+  weightMax     Float
+  gender        Gender
+  experience    Experience?
+  description   String?
+  isActive      Boolean        @default(true)
+  registrations Registration[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Registration {
+  id         String   @id @default(uuid())
+  fighterId  String
+  categoryId String
+  fighter    Fighter  @relation(fields: [fighterId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  status     RegStatus @default(PENDING)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([fighterId, categoryId])
+}

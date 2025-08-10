@@ -1,0 +1,22 @@
+{
+  "name": "kickboxing-competition-app",
+  "version": "1.0.0",
+  "description": "Web application for drafting kickboxing competitions",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm run dev",
+    "server:build": "cd server && npm run build",
+    "client:build": "cd client && npm run build",
+    "build": "npm run server:build && npm run client:build",
+    "start": "cd server && npm start",
+    "setup": "npm install && cd server && npm install && cd ../client && npm install",
+    "db:setup": "cd server && npx server/prisma generate && npx prisma db push && npm run seed",
+    "db:reset": "cd server && npx server/prisma db push --force-reset && npm run seed",
+    "db:studio": "cd server && npx server/prisma studio",
+    "seed": "cd server && npm run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
