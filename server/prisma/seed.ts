@@ -27,7 +27,7 @@ async function main() {
             password: managerPassword,
             firstName: 'John',
             lastName: 'Coach',
-            role: 'MANAGER',
+            role: 'TEAM_MANAGER',
             organization: 'Dragons Fight Club',
         },
     });
@@ -35,7 +35,6 @@ async function main() {
     const team = await prisma.team.create({
         data: {
             name: 'Dragons Fight Club',
-            club: 'Dragons FC',
             city: 'New York',
             country: 'USA',
             coachName: 'John Coach',
